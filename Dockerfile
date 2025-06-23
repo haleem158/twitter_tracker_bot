@@ -1,4 +1,4 @@
-VC# Use official Python image
+# Use official Python image
 FROM python:3.11-slim
 
 # Set working directory
