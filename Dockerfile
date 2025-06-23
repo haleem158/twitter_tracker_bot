@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.2.txt
 
 # Set environment variables (use actual .env on deployment platform)
 ENV PYTHONUNBUFFERED=1
