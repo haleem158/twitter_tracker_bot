@@ -2,33 +2,48 @@ import config
 import twitter
 import tracker
 import time
+import logging
+
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+def validate_config():
+    """Validate that all required configuration variables are set."""
+    required_vars = {
+        'Twitter Bearer Token': config.TWITTER_BEARER_TOKEN,
+        'Telegram Bot Token': config.TELEGRAM_BOT_TOKEN,
+        'Telegram Chat ID': config.TELEGRAM_CHAT_ID,
+        'Polling Interval': config.POLL_INTERVAL
+    }
+    
+    for name, value in required_vars.items():
+        if not value:
+            raise ValueError(f"Missing required configuration: {name}")
+        logging.info(f"{name} is configured")
 
 def main():
-    print("Starting Twitter Tracker Bot...")
-    print("Polling every", config.POLL_INTERVAL, "seconds")
+    """Main function to run the Twitter Tracker Bot."""
+    try:
+        logging.info("Starting Twitter Tracker Bot...")
+        validate_config()
+        logging.info(f"Polling every {config.POLL_INTERVAL} seconds")
 
-    while True:
-        tracker.track_accounts()
-        print("Sleeping...\n")
-        time.sleep(config.POLL_INTERVAL)
-
-if __name__ == "__main__":
-    main()
-"""def main():
-    print("Twitter Bearer Token:", config.TWITTER_BEARER_TOKEN)
-    print("Telegram Bot Token:", config.TELEGRAM_BOT_TOKEN)
-    print("Telegram Chat ID:", config.TELEGRAM_CHAT_ID)
-    print("Polling Interval:", config.POLL_INTERVAL)
-
-    # Replace 'jack' with any public Twitter handle you want to test
-    username = "haleemisthename"
-    tweet_id, tweet_url = twitter.get_latest_tweet(username)
-    if tweet_id:
-        print(f"Latest tweet from @{username}: {tweet_url}")
-    else:
-        print(f"No tweets found for @{username}")
+        while True:
+            try:
+                tracker.track_accounts()
+                logging.info("Sleeping until next poll...")
+                time.sleep(config.POLL_INTERVAL)
+            except Exception as e:
+                logging.error(f"Error during tracking: {str(e)}")
+                time.sleep(config.POLL_INTERVAL)  # Still sleep before retrying
+    except KeyboardInterrupt:
+        logging.info("Bot stopped by user")
+    except Exception as e:
+        logging.error(f"Fatal error: {str(e)}")
+        raise
 
 if __name__ == "__main__":
     main()
-if __name__ == "__main__":
-    main()"""
